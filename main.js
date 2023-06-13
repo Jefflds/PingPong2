@@ -1,63 +1,85 @@
 const canvasEL = document.querySelector('#canvas'),
-canvasCtx = canvasEL.getContext('2d');
+canvasCtx = canvasEL.getContext('2d')
+const gapX = 10
 
-const lineWidth = 15;
+const field = {
+    w: window.innerWidth,
+    h: window.innerHeight,
+    draw: function(){
+        canvasCtx.fillStyle = "#286047"
+        canvasCtx.fillRect(0, 0, this.w, this.h)
+    },
+}
+
+const line = {
+    w: 15,
+    h: field.h,
+    draw: function(){
+        canvasCtx.fillStyle = "#ffffff"
+        canvasCtx.fillRect(field.w / 2 - this.w / 2, 0, this.w, this.h)
+    },
+}
+
+const leftPaddle = {
+    x: gapX,
+    y: 400,
+    w: line.w,
+    h: 200,
+    draw: function(){
+        canvasCtx.fillRect( this.x, this.y, this.w, this.h)
+    },
+}
+
+const rightPaddle = {
+    x: field.w - line.w - gapX,
+    y: 400,
+    w: line.w,
+    h: 200,
+    draw: function(){
+        canvasCtx.fillRect( this.x, this.y, this.w, this.h)
+    },
+}
+
+const score = {
+    human: 1,
+    computer: 2,
+    draw: function(){
+        canvasCtx.font = "bold 72px Arial";
+        canvasCtx.textAlign = "center";
+        canvasCtx.textBaseline = "top";
+        canvasCtx.fillStyle = "#01341D";
+        canvasCtx.fillText(this.human, field.w/4, 50)
+        canvasCtx.fillText(this.computer, field.w/4 + field.w / 2, 50)
+    }
+
+}
+
+const ball = {
+    x: 200,
+    y: 300,
+    r: 20,
+    arc: 2 * Math.PI,
+    draw: function(){
+        canvasCtx.fillStyle = "#ffffff"
+        canvasCtx.beginPath()
+        canvasCtx.arc(this.x, this.y, this.r, 0, this.arc, false)
+        canvasCtx.fill()
+    }
+}
 
 function setup(){
-    canvasEL.width = canvasCtx.width = window.innerWidth;
-    canvasEL.height = canvasCtx.height = window.innerHeight;
+    canvasEL.width = canvasCtx.width = field.w
+    canvasEL.height = canvasCtx.height = field.h
 }
 
 function draw(){
-    canvasCtx.fillStyle = "#286047";
-    canvasCtx.fillRect(0,0, window.innerWidth, window.innerHeight)
 
-    canvasCtx.fillStyle = "#ffffff";
-    canvasCtx.fillRect(
-        window.innerWidth / 2 - lineWidth / 2,
-        0,
-        lineWidth,
-        window.innerHeight
-    );
-
-    canvasCtx.fillRect(
-        10,
-        400, 
-        lineWidth,
-        200
-    )
-
-    canvasCtx.fillRect(
-        window.innerWidth - lineWidth - 10,
-        400, 
-        lineWidth,
-        200
-    )
-
-    canvasCtx.beginPath()
-    canvasCtx.arc(
-        200,
-        300,
-        20,
-        2 * Math.PI, 
-        false
-    )
-    canvasCtx.fill()
-            
-    canvasCtx.font = "bold 72px Arial";
-    canvasCtx.textAlign = "center";
-    canvasCtx.textBaseline = "top";
-    canvasCtx.fillStyle = "#01341D";
-    canvasCtx.fillText(
-        '3',
-        window.innerWidth/4,
-        50
-    )
-    canvasCtx.fillText(
-        '1',
-        window.innerWidth/4 + window.innerWidth / 2,
-        50
-        )
+    field.draw()
+    line.draw()
+    leftPaddle.draw()
+    rightPaddle.draw()
+    score.draw()
+    ball.draw()
 }
 
 setup();
