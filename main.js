@@ -59,11 +59,18 @@ const ball = {
     y: 300,
     r: 20,
     arc: 2 * Math.PI,
+    speed: 5,
+    _move: function(){
+        this.x +=1 * this.speed
+        this.y +=1 * this.speed
+    },
     draw: function(){
         canvasCtx.fillStyle = "#ffffff"
         canvasCtx.beginPath()
         canvasCtx.arc(this.x, this.y, this.r, 0, this.arc, false)
         canvasCtx.fill()
+
+        this._move()
     }
 }
 
@@ -73,7 +80,6 @@ function setup(){
 }
 
 function draw(){
-
     field.draw()
     line.draw()
     leftPaddle.draw()
@@ -82,5 +88,23 @@ function draw(){
     ball.draw()
 }
 
-setup();
-draw();
+window.animateFrame = (function(){
+    return(
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback){
+            return window.setTimeout(callback, 1000 / 60)
+        }
+    )
+})()
+
+function main(){
+    animateFrame(main)
+    draw()
+}
+
+setup()
+main()
