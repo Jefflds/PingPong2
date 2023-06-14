@@ -1,6 +1,11 @@
 const canvasEL = document.querySelector('#canvas'),
-canvasCtx = canvasEL.getContext('2d')
-const gapX = 10
+canvasCtx = canvasEL.getContext('2d'), 
+gapX = 10
+
+const mouse = {
+    x: 0,
+    y: 0
+}
 
 const field = {
     w: window.innerWidth,
@@ -22,12 +27,16 @@ const line = {
 
 const leftPaddle = {
     x: gapX,
-    y: 400,
+    y: 0,
     w: line.w,
     h: 200,
+    _move: function(){
+        this.y = mouse.y - this.h / 2
+    },
     draw: function(){
         canvasCtx.fillRect( this.x, this.y, this.w, this.h)
-    },
+        this._move()
+    }
 }
 
 const rightPaddle = {
@@ -35,8 +44,12 @@ const rightPaddle = {
     y: 400,
     w: line.w,
     h: 200,
+    _move: function(){
+        this.y = ball.y
+    },
     draw: function(){
         canvasCtx.fillRect( this.x, this.y, this.w, this.h)
+        this._move()
     },
 }
 
@@ -106,5 +119,11 @@ function main(){
     draw()
 }
 
+
 setup()
 main()
+
+canvasEL.addEventListener('mousemove', function(e){
+    mouse.x = e.pageX
+    mouse.y = e.pageY
+})
