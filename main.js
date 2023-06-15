@@ -41,7 +41,7 @@ const leftPaddle = {
 
 const rightPaddle = {
     x: field.w - line.w - gapX,
-    y: 400,
+    y: 0,
     w: line.w,
     h: 200,
     _move: function(){
@@ -54,8 +54,14 @@ const rightPaddle = {
 }
 
 const score = {
-    human: 1,
-    computer: 2,
+    human: 0,
+    computer: 0,
+    increaseHuman: function () {
+        this.human++
+    },
+    increaseComputer: function () {
+        this.computer++
+    },
     draw: function(){
         canvasCtx.font = "bold 72px Arial";
         canvasCtx.textAlign = "center";
@@ -68,14 +74,47 @@ const score = {
 }
 
 const ball = {
-    x: 200,
-    y: 300,
+    x: 0,
+    y: 0,
     r: 20,
     arc: 2 * Math.PI,
     speed: 5,
+    directionX: 1,
+    directionY: 1,
+    _calcPosition: function(){
+        // verifica se o jogador 1 fez um ponto (x > largura do campo)
+        if (this.x > field.w - this.r - rightPaddle.w - gapX) {
+            // verifica se a raquete direita está na posição y da bola
+            if (
+              this.y + this.r > rightPaddle.y &&
+              this.y - this.r < rightPaddle.y + rightPaddle.h
+            ) {
+              // rebate a bola intervertendo o sinal de X
+              this._reverseX()
+            } else {
+              // pontuar o jogador 1
+              score.increaseHuman()
+              this._pointUp()
+            }
+          }
+          // verifica as laterais superior e inferior do campo
+        if(
+            (this.y - this.r < 0 && this.directionY < 0) ||
+            (this.y > field.h - this.r && this.directionY > 0)
+        ){
+            // rebate a bola invertendo o sinal do eixo Y
+            this._reverseY()
+        }
+    },
+    _reverseX: function(){
+        this.directionX *= -1
+    },
+    _reverseY: function(){
+        this.directionY *= -1
+    },
     _move: function(){
-        this.x +=1 * this.speed
-        this.y +=1 * this.speed
+        this.x += this.directionX * this.speed
+        this.y += this.directionY * this.speed
     },
     draw: function(){
         canvasCtx.fillStyle = "#ffffff"
@@ -83,6 +122,7 @@ const ball = {
         canvasCtx.arc(this.x, this.y, this.r, 0, this.arc, false)
         canvasCtx.fill()
 
+        this._calcPosition()
         this._move()
     }
 }
